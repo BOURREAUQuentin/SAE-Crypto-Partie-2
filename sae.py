@@ -1,15 +1,16 @@
 """ Module pour chiffrer un texte quelconque, quelle que soit sa taille avec double SDES """
 
-from SDES import decrypt, encrypt
 import time
+from SDES import decrypt, encrypt
+import constantes as CONST
 
 def sdes_encrypt_text(cle, message_clair):
     """Chiffre un texte de taille quelconque avec SDES"""
-    texte_chiffre = ""
+    message_chiffre = ""
     for lettre in message_clair:
         lettre_chiffree = encrypt(cle, ord(lettre))
-        texte_chiffre += chr(lettre_chiffree)
-    return texte_chiffre
+        message_chiffre += chr(lettre_chiffree)
+    return message_chiffre
 
 def sdes_decrypt_text(cle, message_chiffre):
     """Déchiffre un texte de taille quelconque avec SDES"""
@@ -31,15 +32,37 @@ def double_sdes_decrypt_text(premiere_cle, seconde_cle, message_chiffre):
     message_dechiffre_final = sdes_decrypt_text(premiere_cle, message_dechiffre_intermediaire)
     return message_dechiffre_final
 
+def cassage_brutal(message_clair, message_chiffre):
+    """Cassage brutal du chiffrement double SDES"""
+    for key_first in range(0, CONST.NOMBRE_CLES_POSSIBLES): # 2**10 possibilités -> clé de 10 bits
+        for key_second in range(0, CONST.NOMBRE_CLES_POSSIBLES): # même chose que clé 1
+            decrypted_text_result = double_sdes_decrypt_text(key_first, key_second, message_chiffre)
+            if decrypted_text_result == message_clair:
+                return key_second, key_first   # Les clés correctes ont été trouvées
+    return None, None  # Si aucune clé correcte n'est trouvée
+
 if __name__ == "__main__":
-    premiere_cle = 0b1110001110
-    seconde_cle = 0b1110100110
-    text = "test"
-    encrypted_text1 = sdes_encrypt_text(premiere_cle, text)
-    print("Texte chiffré 1er passage : ", encrypted_text1)
-    encrypted_text2 = sdes_encrypt_text(seconde_cle, encrypted_text1)
-    print("Texte chiffré 2e passage : ", encrypted_text2)
-    decrypted_text1 = sdes_decrypt_text(seconde_cle, encrypted_text2)
-    print("Texte déchiffré 1er passage : ", decrypted_text1)
-    decrypted_text2 = sdes_decrypt_text(premiere_cle, decrypted_text1)
-    print("Texte déchiffré 2e passage : ", decrypted_text2)
+    texte_chiffre_1 = sdes_encrypt_text(CONST.PREMIERE_CLE_TEST, CONST.TEXTE_TEST)
+    print("Texte chiffré 1er passage : ", texte_chiffre_1)
+    texte_chiffre_2 = sdes_encrypt_text(CONST.DEUXIEME_CLE_TEST, texte_chiffre_1)
+    print("Texte chiffré 2e passage : ", texte_chiffre_2)
+    texte_dechiffre_1 = sdes_decrypt_text(CONST.DEUXIEME_CLE_TEST, texte_chiffre_2)
+    print("Texte déchiffré 1er passage : ", texte_dechiffre_1)
+    texte_dechiffre_2 = sdes_decrypt_text(CONST.PREMIERE_CLE_TEST, texte_dechiffre_1)
+    print("Texte déchiffré 2e passage : ", texte_dechiffre_2)
+
+    start_time = time.time()
+    texte_chiffre = double_sdes_encrypt_text(CONST.PREMIERE_CLE_TEST,
+                                             CONST.DEUXIEME_CLE_TEST, CONST.TEXTE_TEST)
+    premiere_cle_trouvee, deuxieme_cle_trouvee = cassage_brutal(CONST.TEXTE_TEST, texte_chiffre)
+    if premiere_cle_trouvee is not None and deuxieme_cle_trouvee is not None:
+        print("Clé 1:", bin(premiere_cle_trouvee))
+        print("Clé 2:", bin(deuxieme_cle_trouvee))
+        texte_dechiffre_1 = sdes_decrypt_text(int(bin(premiere_cle_trouvee), 2), texte_chiffre)
+        texte_dechiffre_2 = sdes_decrypt_text(int(bin(deuxieme_cle_trouvee), 2), texte_dechiffre_1)
+        print("Message original : ", texte_dechiffre_2)
+    else:
+        print("Aucune clé trouvée")
+    end_time = time.time()
+    execution_time = end_time - start_time
+    print(f"Temps d'exécution : {execution_time} secondes")
