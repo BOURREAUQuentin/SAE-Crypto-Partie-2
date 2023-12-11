@@ -1,4 +1,4 @@
-""" Module pour chiffrer un texte quelconque, quelle que soit sa taille avec double SDES """
+""" Module pour chiffrer un texte de taille 8bits avec SDES """
 
 from sys import exit as sys_exit
 from time import time
