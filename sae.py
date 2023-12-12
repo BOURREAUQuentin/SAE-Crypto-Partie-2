@@ -34,9 +34,10 @@ def double_sdes_decrypt_text(premiere_cle, seconde_cle, message_chiffre):
 
 def cassage_brutal(message_clair, message_chiffre):
     """Cassage brutal du chiffrement double SDES"""
-    for premiere_cle in range(0, CONST.NOMBRE_CLES_POSSIBLES): # 2**10 possibilités -> clé de 10 bits
+    for premiere_cle in range(0, CONST.NOMBRE_CLES_POSSIBLES): # 2**10 possibilités clé de 10 bits
         for seconde_cle in range(0, CONST.NOMBRE_CLES_POSSIBLES): # même chose que premiere_cle
-            decrypted_text_result = double_sdes_decrypt_text(premiere_cle, seconde_cle, message_chiffre)
+            decrypted_text_result = double_sdes_decrypt_text(premiere_cle,
+                                                             seconde_cle, message_chiffre)
             if decrypted_text_result == message_clair:
                 return seconde_cle, premiere_cle   # Les clés correctes ont été trouvées
     return None, None  # si aucune clé correcte n'est trouvée
