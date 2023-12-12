@@ -34,12 +34,27 @@ def double_sdes_decrypt_text(premiere_cle, seconde_cle, message_chiffre):
 
 def cassage_brutal(message_clair, message_chiffre):
     """Cassage brutal du chiffrement double SDES"""
-    for key_first in range(0, CONST.NOMBRE_CLES_POSSIBLES): # 2**10 possibilités -> clé de 10 bits
-        for key_second in range(0, CONST.NOMBRE_CLES_POSSIBLES): # même chose que clé 1
-            decrypted_text_result = double_sdes_decrypt_text(key_first, key_second, message_chiffre)
+    for premiere_cle in range(0, CONST.NOMBRE_CLES_POSSIBLES): # 2**10 possibilités -> clé de 10 bits
+        for seconde_cle in range(0, CONST.NOMBRE_CLES_POSSIBLES): # même chose que premiere_cle
+            decrypted_text_result = double_sdes_decrypt_text(premiere_cle, seconde_cle, message_chiffre)
             if decrypted_text_result == message_clair:
-                return key_second, key_first   # Les clés correctes ont été trouvées
-    return None, None  # Si aucune clé correcte n'est trouvée
+                return seconde_cle, premiere_cle   # Les clés correctes ont été trouvées
+    return None, None  # si aucune clé correcte n'est trouvée
+
+def cassage_astucieux(message_clair, message_chiffre):
+    """Cassage astucieux avec meet-in-the-middle sur le chiffrement double SDES"""
+    # Précalculer les résultats intermédiaires pour le chiffrement avec la première clé
+    dict_resultats_intermediaires = {}
+    for premiere_cle in range(0, CONST.NOMBRE_CLES_POSSIBLES):
+        texte_chiffre_intermediaire = sdes_encrypt_text(premiere_cle, message_clair)
+        dict_resultats_intermediaires[texte_chiffre_intermediaire] = premiere_cle
+    # Tester les déchiffrements avec la deuxième clé et chercher une correspondance
+    for seconde_cle in range(0, CONST.NOMBRE_CLES_POSSIBLES):
+        texte_dechiffre_intermediaire = sdes_decrypt_text(seconde_cle, message_chiffre)
+        if texte_dechiffre_intermediaire in dict_resultats_intermediaires:
+            premiere_cle = dict_resultats_intermediaires[texte_dechiffre_intermediaire]
+            return seconde_cle, premiere_cle
+    return None, None # si aucune clé correcte n'est trouvée
 
 if __name__ == "__main__":
     texte_chiffre_1 = sdes_encrypt_text(CONST.PREMIERE_CLE_TEST, CONST.TEXTE_TEST)
@@ -65,4 +80,20 @@ if __name__ == "__main__":
         print("Aucune clé trouvée")
     end_time = time.time()
     execution_time = end_time - start_time
-    print(f"Temps d'exécution : {execution_time} secondes")
+    print(f"Temps d'exécution cassage brutal : {execution_time} secondes")
+
+    start_time = time.time()
+    texte_chiffre = double_sdes_encrypt_text(CONST.PREMIERE_CLE_TEST,
+                                             CONST.DEUXIEME_CLE_TEST, CONST.TEXTE_TEST)
+    premiere_cle_trouvee, deuxieme_cle_trouvee = cassage_astucieux(CONST.TEXTE_TEST, texte_chiffre)
+    if premiere_cle_trouvee is not None and deuxieme_cle_trouvee is not None:
+        print("Clé 1:", bin(premiere_cle_trouvee))
+        print("Clé 2:", bin(deuxieme_cle_trouvee))
+        texte_dechiffre_1 = sdes_decrypt_text(int(bin(premiere_cle_trouvee), 2), texte_chiffre)
+        texte_dechiffre_2 = sdes_decrypt_text(int(bin(deuxieme_cle_trouvee), 2), texte_dechiffre_1)
+        print("Message original : ", texte_dechiffre_2)
+    else:
+        print("Aucune clé trouvée")
+    end_time = time.time()
+    execution_time = end_time - start_time
+    print(f"Temps d'exécution cassage astucieux : {execution_time} secondes")
