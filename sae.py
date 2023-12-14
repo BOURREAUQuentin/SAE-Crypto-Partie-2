@@ -44,12 +44,12 @@ def cassage_brutal(message_clair, message_chiffre):
 
 def cassage_astucieux(message_clair, message_chiffre):
     """Cassage astucieux avec meet-in-the-middle sur le chiffrement double SDES"""
-    # Précalculer les résultats intermédiaires pour le chiffrement avec la première clé
+    # précalculer les résultats intermédiaires pour le chiffrement avec la première clé
     dict_resultats_intermediaires = {}
     for premiere_cle in range(0, CONST.NOMBRE_CLES_POSSIBLES):
         texte_chiffre_intermediaire = sdes_encrypt_text(premiere_cle, message_clair)
         dict_resultats_intermediaires[texte_chiffre_intermediaire] = premiere_cle
-    # Tester les déchiffrements avec la deuxième clé et chercher une correspondance
+    # tester les déchiffrements avec la deuxième clé et chercher une correspondance
     for seconde_cle in range(0, CONST.NOMBRE_CLES_POSSIBLES):
         texte_dechiffre_intermediaire = sdes_decrypt_text(seconde_cle, message_chiffre)
         if texte_dechiffre_intermediaire in dict_resultats_intermediaires:
@@ -59,13 +59,13 @@ def cassage_astucieux(message_clair, message_chiffre):
 
 if __name__ == "__main__":
     texte_chiffre_1 = sdes_encrypt_text(CONST.PREMIERE_CLE_TEST, CONST.TEXTE_TEST)
-    print("Texte chiffré 1er passage : ", texte_chiffre_1)
+    print("Texte chiffré 1er passage : \n", texte_chiffre_1)
     texte_chiffre_2 = sdes_encrypt_text(CONST.DEUXIEME_CLE_TEST, texte_chiffre_1)
-    print("Texte chiffré 2e passage : ", texte_chiffre_2)
+    print("Texte chiffré 2e passage : \n", texte_chiffre_2)
     texte_dechiffre_1 = sdes_decrypt_text(CONST.DEUXIEME_CLE_TEST, texte_chiffre_2)
-    print("Texte déchiffré 1er passage : ", texte_dechiffre_1)
+    print("Texte déchiffré 1er passage : \n", texte_dechiffre_1)
     texte_dechiffre_2 = sdes_decrypt_text(CONST.PREMIERE_CLE_TEST, texte_dechiffre_1)
-    print("Texte déchiffré 2e passage : ", texte_dechiffre_2)
+    print("Texte déchiffré 2e passage : \n", texte_dechiffre_2)
 
     start_time = time.time()
     texte_chiffre = double_sdes_encrypt_text(CONST.PREMIERE_CLE_TEST,
@@ -81,7 +81,7 @@ if __name__ == "__main__":
         print("Aucune clé trouvée")
     end_time = time.time()
     execution_time = end_time - start_time
-    print(f"Temps d'exécution cassage brutal : {execution_time} secondes")
+    print(f"Temps d'exécution cassage brutal : {execution_time} secondes\n")
 
     start_time = time.time()
     texte_chiffre = double_sdes_encrypt_text(CONST.PREMIERE_CLE_TEST,
@@ -97,4 +97,4 @@ if __name__ == "__main__":
         print("Aucune clé trouvée")
     end_time = time.time()
     execution_time = end_time - start_time
-    print(f"Temps d'exécution cassage astucieux : {execution_time} secondes")
+    print(f"Temps d'exécution cassage astucieux : {execution_time} secondes\n")
