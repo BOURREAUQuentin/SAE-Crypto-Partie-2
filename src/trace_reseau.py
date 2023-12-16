@@ -1,6 +1,6 @@
 """ Module pour filtrer les messages échangés à partir d'une trace réseau """
 
-from scapy.all import rdpcap, Raw
+from scapy.all import Raw
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
@@ -70,10 +70,3 @@ def afficher_messages(liste_messages):
     """
     for (i, message) in enumerate(liste_messages):
         print("Message", i + 1, ":", message)
-
-
-if __name__ == "__main__":
-    trace = rdpcap('trace_sae.cap')  # chargement de la trace réseau
-    CLE_256_BITS = 0b1110011101101101001100010011111110010010101110011001000001001100111001110110110100110001001111111001001010111001100100000100110011100111011011010011000100111111100100101011100110010000010011001110011101101101001100010011111110010010101110011001000001001100
-    messages = extraire_messages(trace, CLE_256_BITS)
-    afficher_messages(messages)
