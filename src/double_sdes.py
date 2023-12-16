@@ -38,7 +38,7 @@ def dechiffrement_sdes(cle, message_chiffre):
 
 def double_chiffrement_sdes(premiere_cle, seconde_cle, message_clair):
     """
-    Double chiffrement d'un texte de taille quelconque avec SDES
+    Double chiffrement d'un texte de taille quelconque avec double SDES
 
     Args:
         premiere_cle (int): la première clé de chiffrement
@@ -54,7 +54,7 @@ def double_chiffrement_sdes(premiere_cle, seconde_cle, message_clair):
 
 def double_dechiffrement_sdes(premiere_cle, seconde_cle, message_chiffre):
     """
-    Double déchiffrement d'un texte de taille quelconque avec SDES
+    Double déchiffrement d'un texte de taille quelconque avec double SDES
 
     Args:
         premiere_cle (int): la première clé de chiffrement

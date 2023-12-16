@@ -1,11 +1,29 @@
 """ Module pour les constantes de la SAÉ Crypto - Partie 2 """
+# pylint: disable=C0301
 from enum import Enum
 
 PREMIERE_CLE_TEST = 0b1110101110
 DEUXIEME_CLE_TEST = 0b1110101100
-with open('./arsene_lupin_extrait.txt', 'r',encoding="utf8") as fichier:
-    TEXTE_TEST = "test"
+TEXTE_TEST = "test"
 NOMBRE_CLES_POSSIBLES = 1024
+
+class TempsExecution(Enum):
+    """
+    Enumération définissant des constantes liées aux tests de temps d'exécution.
+
+    - 'TEXTE_TEST': Texte pour tester les temps d'exécution à partir du fichier
+    donné dans le sujet.
+    - 'CLE_TEST': Clé pour tester les temps d'exécution de 256 bits (demandé dans
+    le sujet).
+    - 'NOMBRE_DE_TESTS': Nombre de tests effectués par fonction.
+
+    Ces constantes sont utilisées pour le test de temps d'exécution de chiffrement
+    et déchiffrement pour AES et SDES.
+    """
+    with open('arsene_lupin_extrait.txt', 'r',encoding="utf8") as FICHIER:
+        TEXTE_TEST = FICHIER.read()
+    CLE_TEST = 0b1101101101101101101101101101101101101101101101101101101101101101110110110110110110110110110110110110110110110110110110110110110111011011011011011011011011011011011011011011011011011011011011011101101101101101101101101101101101101101101101101101101101101101
+    NOMBRE_DE_TESTS = 1000
 
 class TraceReseau(Enum):
     """
