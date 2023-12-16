@@ -3,5 +3,5 @@
 PREMIERE_CLE_TEST = 0b1110101110
 DEUXIEME_CLE_TEST = 0b1110101100
 with open('./arsene_lupin_extrait.txt', 'r',encoding="utf8") as fichier:
-    TEXTE_TEST = fichier.read()
+    TEXTE_TEST = "test"
 NOMBRE_CLES_POSSIBLES = 1024
