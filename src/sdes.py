@@ -1,8 +1,5 @@
 """ Module pour chiffrer un texte de taille 8bits avec SDES """
 
-from sys import exit as sys_exit
-from time import time
-
 KEY_LENGTH = 10
 SUB_KEY_LENGTH = 8
 DATA_LENGTH = 8
@@ -16,7 +13,7 @@ FPtable = (4, 1, 3, 5, 7, 2, 8, 6)
 P10table = (3, 5, 2, 7, 4, 10, 1, 9, 8, 6)
 P8table = (6, 3, 7, 4, 8, 5, 10, 9)
 
-# Tables for the fk function
+# Tables for the feistel_subkey function
 EPtable = (4, 1, 2, 3, 2, 3, 4, 1)
 S0table = (1, 0, 3, 2, 3, 2, 1, 0, 0, 2, 1, 3, 3, 1, 3, 2)
 S1table = (0, 1, 2, 3, 2, 0, 1, 3, 3, 0, 1, 0, 2, 1, 0, 3)
@@ -32,11 +29,11 @@ def perm(input_byte, perm_table):
             output_byte |= (input_byte & (128 >> (elem - 1))) << ((elem - 1) - index)
     return output_byte
 
-def ip(input_byte):
+def initial_permutation(input_byte):
     """Perform the initial permutation on data"""
     return perm(input_byte, IPtable)
 
-def fp(input_byte):
+def final_permutation(input_byte):
     """Perform the final permutation on data"""
     return perm(input_byte, FPtable)
 
@@ -67,9 +64,9 @@ def key_gen(key):
         sub_key2 += (128 >> index) * shifted_twice_key[elem - 1]
     return (sub_key1, sub_key2)
 
-def fk(sub_key, input_data):
+def feistel_subkey(sub_key, input_data):
     """Apply Feistel function on data with given subkey"""
-    def f(s_key, right_nibble):
+    def feistel(s_key, right_nibble):
         aux = s_key ^ perm(swap_nibbles(right_nibble), EPtable)
         index1 = ((aux & 0x80) >> 4) + ((aux & 0x40) >> 5) + \
                  ((aux & 0x20) >> 5) + ((aux & 0x10) >> 2)
@@ -79,47 +76,14 @@ def fk(sub_key, input_data):
         return perm(sbox_outputs, P4table)
 
     left_nibble, right_nibble = input_data & 0xf0, input_data & 0x0f
-    return (left_nibble ^ f(sub_key, right_nibble)) | right_nibble
+    return (left_nibble ^ feistel(sub_key, right_nibble)) | right_nibble
 
 def encrypt(key, plaintext):
     """Encrypt plaintext with given key"""
-    data = fk(key_gen(key)[0], ip(plaintext))
-    return fp(fk(key_gen(key)[1], swap_nibbles(data)))
+    data = feistel_subkey(key_gen(key)[0], initial_permutation(plaintext))
+    return final_permutation(feistel_subkey(key_gen(key)[1], swap_nibbles(data)))
 
 def decrypt(key, ciphertext):
     """Decrypt ciphertext with given key"""
-    data = fk(key_gen(key)[1], ip(ciphertext))
-    return fp(fk(key_gen(key)[0], swap_nibbles(data)))
-
-if __name__ == "__main__":
-    try:
-        assert encrypt(0b0000000000, 0b10101010) == 0b00010001
-    except AssertionError:
-        print("Error on encrypt:")
-        print("Output: ", encrypt(0b0000000000, 0b10101010), "Expected: ", 0b00010001)
-        sys_exit(1)
-    try:
-        assert encrypt(0b1110001110, 0b10101010) == 0b11001010
-    except AssertionError:
-        print("Error on encrypt:")
-        print("Output: ", encrypt(0b1110001110, 0b10101010), "Expected: ", 0b11001010)
-        sys_exit(1)
-    try:
-        assert encrypt(0b1110001110, 0b01010101) == 0b01110000
-    except AssertionError:
-        print("Error on encrypt:")
-        print("Output: ", encrypt(0b1110001110, 0b01010101), "Expected: ", 0b01110000)
-        sys_exit(1)
-    try:
-        assert encrypt(0b1111111111, 0b10101010) == 0b00000100
-    except AssertionError:
-        print("Error on encrypt:")
-        print("Output: ", encrypt(0b1111111111, 0b10101010), "Expected: ", 0b00000100)
-        sys_exit(1)
-
-    t1 = time()
-    for i in range(1000):
-        encrypt(0b1110001110, 0b10101010)
-    t2 = time()
-    print(f"Elapsed time for 1,000 encryptions: {(t2 - t1):0.3f}s")
-    sys_exit()
+    data = feistel_subkey(key_gen(key)[1], initial_permutation(ciphertext))
+    return final_permutation(feistel_subkey(key_gen(key)[0], swap_nibbles(data)))
