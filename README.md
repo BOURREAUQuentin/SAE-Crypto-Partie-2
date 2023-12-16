@@ -20,7 +20,9 @@
 
 ## Éxécution de notre programme
 
-...
+Pour lancer les fichiers, il faut être obligatoirement dans le répertoire racine, soit SAE-CRYPTO-PARTIE-2. Une fois dedans, vous pouvez lancez par exemple le fichier test_cassages en tapant la commande suivante :
+
+- python3 test/test_cassages.py
 
 #
 

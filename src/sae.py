@@ -1,7 +1,7 @@
 """ Module pour chiffrer un texte quelconque, quelle que soit sa taille avec double SDES """
 
 import time
-from SDES import decrypt, encrypt
+from sdes import decrypt, encrypt
 import constantes as CONST
 
 def sdes_encrypt_text(cle, message_clair):
