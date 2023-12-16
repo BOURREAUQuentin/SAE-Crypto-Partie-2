@@ -7,6 +7,19 @@ DEUXIEME_CLE_TEST = 0b1110101100
 TEXTE_TEST = "test"
 NOMBRE_CLES_POSSIBLES = 1024
 
+class CleImage(Enum):
+    """
+    Énumération définissant des constantes liées à la recherche de clé dans l'image.
+
+    - 'NOMBRE_BITS_CLE_IMAGE': Nombre de bits pour la clé à trouver dans l'image.
+    - 'CHEMIN_CLE_IMAGE': Chemin de l'image contenant la clé à trouver.
+
+    Ces constantes sont utilisées pour le code et le test de la recherche de clé
+    dans l'image.
+    """
+    NOMBRE_BITS_CLE_IMAGE = 64
+    CHEMIN_CLE_IMAGE = "./rossignol2.bmp"
+
 class TempsExecution(Enum):
     """
     Enumération définissant des constantes liées aux tests de temps d'exécution.
