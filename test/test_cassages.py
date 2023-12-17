@@ -18,7 +18,8 @@ def test_cassage_brutal():
     start_time = time.time()
     texte_chiffre = double_chiffrement_sdes(CONST.PREMIERE_CLE_TEST,
                                              CONST.DEUXIEME_CLE_TEST, CONST.TEXTE_TEST)
-    premiere_cle_trouvee, deuxieme_cle_trouvee = cassage_brutal(CONST.TEXTE_TEST, texte_chiffre,True)
+    premiere_cle_trouvee, deuxieme_cle_trouvee = cassage_brutal(CONST.TEXTE_TEST,
+                                                                texte_chiffre, True)
     if premiere_cle_trouvee is not None and deuxieme_cle_trouvee is not None:
         print("Clé 1 :", bin(premiere_cle_trouvee))
         print("Clé 2 :", bin(deuxieme_cle_trouvee))
@@ -39,7 +40,8 @@ def test_cassage_astucieux():
     start_time = time.time()
     texte_chiffre = double_chiffrement_sdes(CONST.PREMIERE_CLE_TEST,
                                              CONST.DEUXIEME_CLE_TEST, CONST.TEXTE_TEST)
-    premiere_cle_trouvee, deuxieme_cle_trouvee = cassage_astucieux(CONST.TEXTE_TEST, texte_chiffre,True)
+    premiere_cle_trouvee, deuxieme_cle_trouvee = cassage_astucieux(CONST.TEXTE_TEST,
+                                                                   texte_chiffre, True)
     if premiere_cle_trouvee is not None and deuxieme_cle_trouvee is not None:
         print("Clé 1 :", bin(premiere_cle_trouvee))
         print("Clé 2 :", bin(deuxieme_cle_trouvee))

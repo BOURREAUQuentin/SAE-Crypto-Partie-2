@@ -73,8 +73,44 @@ def test_moyenne_temps_chiffrement_aes():
     print("La moyenne du temps d'exécution du chiffrement AES est de :",
           somme_temps/CONST.TempsExecution.NOMBRE_DE_TESTS_AES_DSES.value,"secondes\n")
 
+def test_moyenne_temps_cassage_brutal():
+    """
+    Test la moyenne de temps d'exécution du cassage brutal de double SDES
+    """
+    print("Voici le texte utilisé lors du cassage brutal:", CONST.TEXTE_TEST,"\n")
+    texte_chiffre = double_chiffrement_sdes(CONST.PREMIERE_CLE_TEST,
+                                            CONST.DEUXIEME_CLE_TEST, CONST.TEXTE_TEST)
+    somme_temps = 0
+    for _ in range(CONST.TempsExecution.NOMBRE_DE_TESTS_CASSAGE.value):
+        start_time = time.time()
+        _, _ = cassage_brutal(CONST.TEXTE_TEST, texte_chiffre,False)
+        end_time = time.time()
+        execution_time = end_time - start_time
+        somme_temps += execution_time
+    print("La moyenne du temps d'exécution du cassage brutal de double SDES est de :",
+          somme_temps/CONST.TempsExecution.NOMBRE_DE_TESTS_CASSAGE.value,"secondes\n")
+
+def test_moyenne_temps_cassage_astucieux():
+    """
+    Test la moyenne de temps d'exécution du cassage astucieux de double SDES
+    """
+    print("Voici le texte utilisé lors du cassage astucieux:", CONST.TEXTE_TEST,"\n")
+    texte_chiffre = double_chiffrement_sdes(CONST.PREMIERE_CLE_TEST,
+                                            CONST.DEUXIEME_CLE_TEST, CONST.TEXTE_TEST)
+    somme_temps = 0
+    for _ in range(CONST.TempsExecution.NOMBRE_DE_TESTS_CASSAGE.value):
+        start_time = time.time()
+        _, _ = cassage_astucieux(CONST.TEXTE_TEST, texte_chiffre,False)
+        end_time = time.time()
+        execution_time = end_time - start_time
+        somme_temps += execution_time
+    print("La moyenne du temps d'exécution du cassage astucieux de double SDES est de :",
+          somme_temps/CONST.TempsExecution.NOMBRE_DE_TESTS_CASSAGE.value,"secondes\n")
+
 if __name__ == "__main__":
-    test_moyenne_temps_dechiffrement_sdes()
-    test_moyenne_temps_chiffrement_sdes()
-    test_moyenne_temps_dechiffrement_aes()
-    test_moyenne_temps_chiffrement_aes()
+    # test_moyenne_temps_dechiffrement_sdes()
+    # test_moyenne_temps_chiffrement_sdes()
+    # test_moyenne_temps_dechiffrement_aes()
+    # test_moyenne_temps_chiffrement_aes()
+    test_moyenne_temps_cassage_brutal()
+    test_moyenne_temps_cassage_astucieux()
