@@ -18,5 +18,6 @@ def test_trouver_cle_image():
         CONST.CleImage.CHEMIN_CLE_IMAGE.value
     ) == "1110011101101101001100010011111110010010101110011001000001001100"
 
+
 if __name__ == "__main__":
     test_trouver_cle_image()

@@ -3,6 +3,7 @@
 from PIL import Image
 import constantes as CONST
 
+
 def trouver_cle_image(image_contenant_cle):
     """
     Trouve la clé cachée dans l'image

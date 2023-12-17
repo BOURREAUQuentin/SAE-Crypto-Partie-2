@@ -19,30 +19,38 @@ S0table = (1, 0, 3, 2, 3, 2, 1, 0, 0, 2, 1, 3, 3, 1, 3, 2)
 S1table = (0, 1, 2, 3, 2, 0, 1, 3, 3, 0, 1, 0, 2, 1, 0, 3)
 P4table = (2, 4, 3, 1)
 
+
 def perm(input_byte, perm_table):
     """Permute input byte according to permutation table"""
     output_byte = 0
     for index, elem in enumerate(perm_table):
         if index >= elem:
-            output_byte |= (input_byte & (128 >> (elem - 1))) >> (index - (elem - 1))
+            output_byte |= (input_byte & (128 >>
+                                          (elem - 1))) >> (index - (elem - 1))
         else:
-            output_byte |= (input_byte & (128 >> (elem - 1))) << ((elem - 1) - index)
+            output_byte |= (input_byte & (128 >>
+                                          (elem - 1))) << ((elem - 1) - index)
     return output_byte
+
 
 def initial_permutation(input_byte):
     """Perform the initial permutation on data"""
     return perm(input_byte, IPtable)
 
+
 def final_permutation(input_byte):
     """Perform the final permutation on data"""
     return perm(input_byte, FPtable)
+
 
 def swap_nibbles(input_byte):
     """Swap the two nibbles of data"""
     return (input_byte << 4 | input_byte >> 4) & 0xff
 
+
 def key_gen(key):
     """Generate the two required subkeys"""
+
     def left_shift(key_bit_list):
         """Perform a circular left shift on the first and second five bits"""
         shifted_key = [None] * KEY_LENGTH
@@ -64,8 +72,10 @@ def key_gen(key):
         sub_key2 += (128 >> index) * shifted_twice_key[elem - 1]
     return (sub_key1, sub_key2)
 
+
 def feistel_subkey(sub_key, input_data):
     """Apply Feistel function on data with given subkey"""
+
     def feistel(s_key, right_nibble):
         aux = s_key ^ perm(swap_nibbles(right_nibble), EPtable)
         index1 = ((aux & 0x80) >> 4) + ((aux & 0x40) >> 5) + \
@@ -78,12 +88,16 @@ def feistel_subkey(sub_key, input_data):
     left_nibble, right_nibble = input_data & 0xf0, input_data & 0x0f
     return (left_nibble ^ feistel(sub_key, right_nibble)) | right_nibble
 
+
 def encrypt(key, plaintext):
     """Encrypt plaintext with given key"""
     data = feistel_subkey(key_gen(key)[0], initial_permutation(plaintext))
-    return final_permutation(feistel_subkey(key_gen(key)[1], swap_nibbles(data)))
+    return final_permutation(
+        feistel_subkey(key_gen(key)[1], swap_nibbles(data)))
+
 
 def decrypt(key, ciphertext):
     """Decrypt ciphertext with given key"""
     data = feistel_subkey(key_gen(key)[1], initial_permutation(ciphertext))
-    return final_permutation(feistel_subkey(key_gen(key)[0], swap_nibbles(data)))
+    return final_permutation(
+        feistel_subkey(key_gen(key)[0], swap_nibbles(data)))
