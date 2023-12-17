@@ -3,13 +3,15 @@
 from double_sdes import chiffrement_sdes, dechiffrement_sdes, double_dechiffrement_sdes
 import constantes as CONST
 
-def cassage_brutal(message_clair, message_chiffre):
+def cassage_brutal(message_clair, message_chiffre, affiche_nb_tentatives=False):
     """
     Cassage brutal du chiffrement double SDES
 
     Args:
         message_clair (str): le message en clair
         message_chiffre (str): le message chiffré
+        affiche_nb_tentatives (bool, optional): True si on veut afficher le nombre de
+        tentatives pour le cassage brutal. Par défaut à False.
 
     Returns:
         (tuple): le tuple contenant la 1ère clé et la 2ème clé possiblement utilisé pour le
@@ -22,17 +24,20 @@ def cassage_brutal(message_clair, message_chiffre):
             decrypted_text_result = double_dechiffrement_sdes(premiere_cle,
                                                              seconde_cle, message_chiffre)
             if decrypted_text_result == message_clair:
-                print("Nombre de tentatives pour trouver le couple de clés :", nb_tentatives)
+                if affiche_nb_tentatives:
+                    print("Nombre de tentatives pour trouver le couple de clés :", nb_tentatives)
                 return seconde_cle, premiere_cle # les clés correctes ont été trouvées
     return None, None  # si aucune clé correcte n'est trouvée
 
-def cassage_astucieux(message_clair, message_chiffre):
+def cassage_astucieux(message_clair, message_chiffre, affiche_nb_tentatives=False):
     """
     Cassage astucieux avec meet-in-the-middle sur le chiffrement double SDES
 
     Args:
         message_clair (str): le message en clair
         message_chiffre (str): le message chiffré
+        affiche_nb_tentatives (bool, optional): True si on veut afficher le nombre de
+        tentatives pour le cassage brutal. Par défaut à False.
 
     Returns:
         (tuple): le tuple contenant la 1ère clé et la 2ème clé possiblement utilisé pour le
@@ -50,7 +55,8 @@ def cassage_astucieux(message_clair, message_chiffre):
         nb_tentatives += 1
         texte_dechiffre_intermediaire = dechiffrement_sdes(seconde_cle, message_chiffre)
         if texte_dechiffre_intermediaire in dict_resultats_intermediaires:
-            print("Nombre de tentatives pour trouver le couple de clés :", nb_tentatives)
+            if affiche_nb_tentatives:
+                print("Nombre de tentatives pour trouver le couple de clés :", nb_tentatives)
             premiere_cle = dict_resultats_intermediaires[texte_dechiffre_intermediaire]
             return seconde_cle, premiere_cle
     return None, None # si aucune clé correcte n'est trouvée
