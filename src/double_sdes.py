@@ -2,6 +2,7 @@
 
 from sdes import decrypt, encrypt
 
+
 def chiffrement_sdes(cle, message_clair):
     """
     Chiffre un texte de taille quelconque avec SDES
@@ -18,6 +19,7 @@ def chiffrement_sdes(cle, message_clair):
         lettre_chiffree = encrypt(cle, ord(lettre))
         message_chiffre += chr(lettre_chiffree)
     return message_chiffre
+
 
 def dechiffrement_sdes(cle, message_chiffre):
     """
@@ -36,6 +38,7 @@ def dechiffrement_sdes(cle, message_chiffre):
         message_dechiffre += chr(lettre_dechiffree)
     return message_dechiffre
 
+
 def double_chiffrement_sdes(premiere_cle, seconde_cle, message_clair):
     """
     Double chiffrement d'un texte de taille quelconque avec double SDES
@@ -48,9 +51,14 @@ def double_chiffrement_sdes(premiere_cle, seconde_cle, message_clair):
     Returns:
         (str): le message chiffré avec les deux clés de chiffrement
     """
-    message_chiffre_intermediaire = chiffrement_sdes(premiere_cle, message_clair)
-    message_chiffre_final = chiffrement_sdes(seconde_cle, message_chiffre_intermediaire)
+    # chiffre le message clair avec la première clé
+    message_chiffre_intermediaire = chiffrement_sdes(premiere_cle,
+                                                     message_clair)
+    # chiffre le message chiffré auparavant avec la deuxième clé
+    message_chiffre_final = chiffrement_sdes(seconde_cle,
+                                             message_chiffre_intermediaire)
     return message_chiffre_final
+
 
 def double_dechiffrement_sdes(premiere_cle, seconde_cle, message_chiffre):
     """
@@ -64,6 +72,10 @@ def double_dechiffrement_sdes(premiere_cle, seconde_cle, message_chiffre):
     Returns:
         (str): le message chiffré avec les deux clés de chiffrement
     """
-    message_dechiffre_intermediaire = dechiffrement_sdes(seconde_cle, message_chiffre)
-    message_dechiffre_final = dechiffrement_sdes(premiere_cle, message_dechiffre_intermediaire)
+    # déchiffre le message chiffré avec la deuxième clé
+    message_dechiffre_intermediaire = dechiffrement_sdes(
+        seconde_cle, message_chiffre)
+    # déchiffre le message déchiffré auparavant avec la première clé
+    message_dechiffre_final = dechiffrement_sdes(
+        premiere_cle, message_dechiffre_intermediaire)
     return message_dechiffre_final

@@ -7,6 +7,7 @@ DEUXIEME_CLE_TEST = 0b1110101100
 TEXTE_TEST = "test"
 NOMBRE_CLES_POSSIBLES = 1024
 
+
 class CleImage(Enum):
     """
     Énumération définissant des constantes liées à la recherche de clé dans l'image.
@@ -19,6 +20,7 @@ class CleImage(Enum):
     """
     NOMBRE_BITS_CLE_IMAGE = 64
     CHEMIN_CLE_IMAGE = "./rossignol2.bmp"
+
 
 class TempsExecution(Enum):
     """
@@ -33,11 +35,11 @@ class TempsExecution(Enum):
     Ces constantes sont utilisées pour le test de temps d'exécution de chiffrement
     et déchiffrement pour AES et SDES.
     """
-    with open('arsene_lupin_extrait.txt', 'r',encoding="utf8") as FICHIER:
+    with open('arsene_lupin_extrait.txt', 'r', encoding="utf8") as FICHIER:
         TEXTE_TEST = FICHIER.read()
     CLE_TEST = 0b1101101101101101101101101101101101101101101101101101101101101101110110110110110110110110110110110110110110110110110110110110110111011011011011011011011011011011011011011011011011011011011011011101101101101101101101101101101101101101101101101101101101101101
-    NOMBRE_DE_TESTS_AES_DSES = 1000
-    NOMBRE_DE_TESTS_CASSAGE = 100
+    NOMBRE_DE_TESTS = 1000
+
 
 class TraceReseau(Enum):
     """
